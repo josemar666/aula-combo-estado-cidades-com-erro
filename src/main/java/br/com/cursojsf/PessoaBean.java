@@ -9,6 +9,7 @@ package br.com.cursojsf;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -16,27 +17,33 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
 import br.com.dao.DaoGeneric;
+import br.com.entidades.Cidades;
+import br.com.entidades.Estados;
 import br.com.entidades.Pessoa;
+import br.com.jpautil.JpaUtil;
 import br.com.repository.IDaoPessoa;
 import br.com.repository.IDaoPessoaImple;
 
-@ViewScoped
-@ManagedBean(name = "pessoaBean")
-public class PessoaBean {
+@javax.faces.view.ViewScoped
+@Named(value = "pessoaBean")
+public class PessoaBean implements Serializable {
 
-      private Pessoa pessoa = new Pessoa ();
+    
+	private static final long serialVersionUID = 1L;
+
+	private Pessoa pessoa = new Pessoa ();
       
       private DaoGeneric<Pessoa> daoGeneric = new DaoGeneric<Pessoa>();
       
@@ -45,6 +52,8 @@ public class PessoaBean {
       private IDaoPessoa idaoPessoa = new IDaoPessoaImple();
       
       private List<SelectItem> estados;
+      
+      private List<SelectItem> cidades;
       
       
       
@@ -122,7 +131,15 @@ public class PessoaBean {
 		this.pessoas = pessoas;
 	}
 	
-			
+	
+	public List<SelectItem> getCidades() {
+		return cidades;
+	}
+
+	public void setCidades(List<SelectItem> cidades) {
+		this.cidades = cidades;
+	}
+	
 	
 
 	public void pesquisaCep(AjaxBehaviorEvent event) {
@@ -245,6 +262,54 @@ public class PessoaBean {
 	public List<SelectItem> getEstados() {
 		estados = idaoPessoa.listaEstados();
 		return estados;
+	}
+	
+	public void carregaCidades(AjaxBehaviorEvent event) {
+		
+		
+	Estados estado =   (Estados)  ((HtmlSelectOneMenu) event.getSource()).getValue();
+		
+	
+			
+		 
+		  if(estado != null) {
+			  
+			  pessoa.setEstados(estado);
+			  
+			  List<Cidades>cidades = JpaUtil.getEntityManager().createQuery("from Cidades where estados.id = " + estado.getId()).getResultList();
+			  
+			  List<SelectItem>  selectItemscidades = new ArrayList<SelectItem>();
+			  
+			  for (Cidades cidade : cidades ) {
+				
+				  selectItemscidades.add(new SelectItem(cidade,cidade.getNome()));
+			}
+			  
+			  setCidades(selectItemscidades);
+		  }
+		  
+		
+	}
+	
+	public void editar() {
+		
+		if(pessoa.getCidades() != null) {
+			Estados estado = pessoa.getCidades().getEstados();
+			pessoa.setEstados(estado);
+			
+			 List<Cidades>cidades = JpaUtil.getEntityManager().createQuery("from Cidades where estados.id = " + estado.getId()).getResultList();
+			  
+			  List<SelectItem>  selectItemscidades = new ArrayList<SelectItem>();
+			  
+			  for (Cidades cidade : cidades ) {
+				
+				  selectItemscidades.add(new SelectItem(cidade,cidade.getNome()));
+			}
+			  
+			  setCidades(selectItemscidades);
+			
+		}
+		
 	}
 
 }

@@ -46,7 +46,7 @@
 		<h:panelGrid columns="2"   >
 		
 		<h:outputLabel value="Login"  style="color: white" />
-		<h:inputText value="#{pessoaBean.pessoa.login}"  pt:placeholder="apenas letras minusculas!" />
+		<h:inputText value="#{pessoaBean.pessoa.login}" required="true" pt:placeholder="apenas letras minusculas!" />
 		
 		<h:outputLabel value="Senha"   style="color: white" />
 		<h:inputSecret  value="#{pessoaBean.pessoa.senha}"  pt:placeholder="digite apenas numeros!"/>

@@ -208,17 +208,34 @@
 
 			</h:selectManyCheckbox>	
 			
-			<h:panelGrid/>		
-			
 			<h:outputLabel value="Estados : " style="color:white" />
-			<h:selectOneMenu value="#{pessoaBean.pessoa.estados}">
-			<f:selectItems value="#{pessoaBean.estados}"/>			
+			<h:selectOneMenu value="#{pessoaBean.pessoa.estados}" immediate="true" id="comboEstados" converter="estadoConverter">
+			<f:selectItem  itemLabel="--[SELECIONE]--" noSelectionOption="true" />
+			<f:selectItems value="#{pessoaBean.estados}"/>
+			<f:ajax event="change" execute="@this" render="comboCidade" listener="#{pessoaBean.carregaCidades}"></f:ajax>
 			</h:selectOneMenu>
 			
 			
 			
+			
+			<h:outputLabel value="Cidades :" style="color:white"  />
+			
+			<h:selectOneMenu value="#{pessoaBean.pessoa.cidades}" immediate="true" id ="comboCidade" converter="cidadeConverter">
+			<f:selectItem  itemLabel="--[SELECIONE]--" noSelectionOption="true"  />
+			<f:selectItems value="#{pessoaBean.cidades}" />
+			
+			
+			</h:selectOneMenu>
+			
+			
+			
+			<h:panelGrid/>		
+			
+			
+			
+			
 		    		
-            <h:panelGrid  style="margin-top:22%;margin-left:35%;height: 100vh;"  columns="2">
+            <h:panelGrid style="margin-top:10%;" >
 			<h:outputLabel>
 				<h:panelGroup>
 					<h:commandButton value="salvar" action="#{pessoaBean.salvar}"
@@ -249,7 +266,7 @@
  </h:form >           
 
 	
- <h:form  id="formTable" style="margin-top:22%;margin-left:35%;height: 80vh;"  rendered="#{pessoaBean.permiteAcessoComponentes('ADMINISTRADOR')}"  >
+ <h:form  id="formTable" style="margin-top:5%;margin-left:35%;height: 20vh;"  rendered="#{pessoaBean.permiteAcessoComponentes('ADMINISTRADOR')}"  >
 
 		
 
@@ -287,9 +304,9 @@
 				</h:column>
 
 				<h:column>
-					<f:facet name="header"> AÇÃO </f:facet>
+					<f:facet name="header"> EDITAR </f:facet>
 
-					<h:commandLink title="editar" style="color:white">
+					<h:commandLink title="editar" style="color:white" immediate="true" >
 
 						<h:graphicImage value="/resources/img/editar.ico" />
 						<f:setPropertyActionListener value="#{pessoa}"
@@ -304,7 +321,7 @@
 				<h:column
 					rendered="#{pessoaBean.permiteAcessoComponentes('ADMINISTRADOR')}">
 
-					<f:facet name="header"> AÇÃO </f:facet>
+					<f:facet name="header"> EXCLUIR </f:facet>
 					<h:commandLink action="#{pessoaBean.remove}" title="remover"
 						style="color:white">
 						<h:graphicImage value="/resources/img/remove.ico" />

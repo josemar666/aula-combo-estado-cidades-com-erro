@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -76,6 +77,10 @@ public class Pessoa implements Serializable {
 	private String ddd;
 	
 	private String siafi;
+	
+	
+	@ManyToOne
+	private Cidades cidades;
 	
 	
 	
@@ -335,9 +340,16 @@ public class Pessoa implements Serializable {
 
 	public void setEstados(Estados estados) {
 		this.estados = estados;
+	}	
+	
+
+	public Cidades getCidades() {
+		return cidades;
 	}
-	
-	
+
+	public void setCidades(Cidades cidades) {
+		this.cidades = cidades;
+	}
 
 	@Override//usa esse método para diferenciar os registros(no banco de dados) do objeto pessoa por ID
 	public int hashCode() {

@@ -44,25 +44,34 @@ public class IDaoPessoaImple implements IDaoPessoa {
 
 	@Override
 	public List<SelectItem> listaEstados() {
-		
-		List<SelectItem> selectItems = new ArrayList<SelectItem>();
-		
-		EntityTransaction entityTransaction = entityManager.getTransaction();
-		
-		entityTransaction.begin();
-		
-		
-		
-		List<Estados> estados = entityManager.createQuery("from Estados").getResultList();
-		
-		for (Estados estado : estados) {
-			
-			selectItems.add(new SelectItem(estado,estado.getNome()));
-		} 
-		
-		
-		
-		return selectItems;
+
+	    EntityManager entityManager = JpaUtil.getEntityManager();
+	    EntityTransaction entityTransaction = entityManager.getTransaction();
+
+	    List<SelectItem> selectItems = new ArrayList<>();
+
+	    try {
+	        entityTransaction.begin();
+
+	        List<Estados> estados = entityManager.createQuery("from Estados", Estados.class).getResultList();
+
+	        for (Estados estado : estados) {
+	            selectItems.add(new SelectItem(estado, estado.getNome()));
+	        }
+
+	        entityTransaction.commit();
+
+	    } catch (Exception e) {
+	        if (entityTransaction.isActive()) {
+	            entityTransaction.rollback();
+	        }
+	        e.printStackTrace();
+
+	    } finally {
+	        entityManager.close();
+	    }
+
+	    return selectItems;
 	}
 
 }
